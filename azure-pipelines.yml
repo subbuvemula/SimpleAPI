@@ -1,17 +1,15 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-trigger:
-- master
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+# Check out the code and keep the token so we can tag the repository
+- checkout: self
+  persistCredentials: true
+
+--- rest of pipeline
+
+# Tag the current branch with the version number
+- script: |
+    git add filename.ext
+    git push origin
+    git tag -a tagName -m 'tag message' 
+    git push --tags
+  workingDirectory: $(Build.SourcesDirectory)
+  displayName: 'Git Commit and Tag from pipeline'
